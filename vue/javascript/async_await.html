@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+  <script>
+      //add async,return promise
+      async function test(){
+          return 1;
+      }
+      console.log(test());
+      //await only can be used in function of async
+      function sleep(){
+          return new Promise(resolve=>{
+            setTimeout(()=>{
+                console.log('finish')
+                resolve("sleep");
+            },2000)
+          });
+      }
+      async function test1(){
+          let value=await sleep();
+          console.log("object");
+      }
+      test1();
+      //await waits resolve,so finish first,object second
+      var a=0
+      var b=async()=>{
+          a=a+await 10
+          console.log('2',a)
+          a=(await 10)+a
+          console.log('3',a)
+      }
+      b()
+      a++
+      console.log('1',a)
+      //async becomes pending,so a++ first 
+  </script>  
+</body>
+</html>
