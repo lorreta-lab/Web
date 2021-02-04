@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function foo(){
+            console.log(this.a);
+        }
+        var a=1;
+        foo()
+        var obj={
+            a:2,
+            foo:foo
+        }
+        obj.foo()
+        var c=new foo()//this bind c
+        c.a=3
+        console.log(c.a)
+        function b(){
+            return()=>{
+                return()=>{
+                console.log(this)
+                }
+            }
+        }
+        console.log(b()()())// return window  operate the function,return underfined don't have three 'return'
+    </script>
+</body>
+</html>
