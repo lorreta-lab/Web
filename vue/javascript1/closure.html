@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var A=function(){
+            let a=1
+            function B(){
+                console.log(a)
+            }
+            return B
+        }
+        A();
+        for(var i=1;i<=5;i++){
+            setTimeout(function timer(){
+                console.log(i);
+            },i*1000)
+        }
+        for(var i=1;i<=5;i++){
+            (function(j){
+            setTimeout(function timer(){
+            console.log(j);
+            },j*1000)
+            })(i);//using closure
+        }
+        for(var i=1;i<=5;i++){
+            setTimeout(function timer(j){
+                   console.log(j);
+            },i*1000,i);
+        }//using setTimeout third parameter
+        for(let i=1;i<=5;i++){
+            setTimeout(function timer(){
+                console.log(i);
+            },i*1000);
+        }
+        //form block function
+        {
+            let i=0
+            {
+                let ii=i
+                setTimeout(function timer(){
+                console.log(ii);
+                },i*1000);
+            }
+            i++
+            {
+                let ii=i
+            }
+            i++
+            {
+                let ii=i
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //ES5 child inherits parent
+        function Super(){}
+        Super.prototype.getNumber=function(){
+            return 1
+        }
+        function Sub(){}
+        let s=new Sub()
+        Sub.prototype=Object.create(Super.prototype,{
+            constructor:{
+                value:Sub,
+                enumerable:false,
+                writable:true,
+                configurable:true
+            }
+        })
+        class MyDate extends Date{
+            test(){
+                return this.getTime()
+            }
+        }
+        let myDate=new MyDate()
+        console.log(myDate.test())
+        //ES6 grammar class
+        //create a father,change father's proto to connect child's prototype secondly,Prototype of child
+        //next proto,value for father's prototype
+        function MyData(){
+
+        }
+        MyData.prototype.test=function(){
+            return this.getTime()
+        }
+        let d=new Date()
+        console.log(Object.setPrototypeOf(d,MyData.prototype));
+        console.log(Object.setPrototypeOf(MyData.prototype,Date.prototype));
+    </script>
+</body>
+</html>

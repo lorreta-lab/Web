@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let a={
+            value:1
+        }
+        function getValue(name,age){
+            console.log(name)
+            console.log(age)
+            console.log(this.name)
+        }
+        console.log(getValue.call(a,'yck','24'));
+        console.log(getValue.apply(a,['yck','24']));
+        //realize call
+        Function.prototype.myCall=function(context){
+            var context=context||window
+            //give context to add an attribute
+            //getValue.call(a,'yck','24')=>a.fn=getValue
+            context.fn=this
+            //catch the param behind context
+            var args=[...arguments].slice(1)
+            //getValue.call(a,'yck','24')=>a.fn('yck','24')
+            var result=context.fn(...args)
+            //delete fn
+            delete context.fn
+            return result
+        }
+        //realize apply
+        Function.prototype.myApply=function(context){
+            var context=context||window
+            context.fn=this
+            var result
+            //needing to decide whether storing the second param
+            //if exising,need to lay out the second param
+            if(arguments[1]){
+                result=context.fn(...arguments[1])
+            }else{
+                result=context.fn()
+            }
+            delete context.fn
+            return result
+        }
+        //realize bind
+        Function.prototype.myBind=function(context){
+          if(typeof this !=='function'){
+              throw new TypeError('Error')
+          }
+          var _this=this
+          var args=[...arguments].slice(1)
+          //return a function
+          return function F(){
+              //because returning a function,we can new F(),so needing to distinguish
+              if(this instanceof F){
+                  return new _this(...args,...arguments)
+              }
+              return _this.apply(context,args.concat(...arguments))
+          }
+        }
+    </script>
+</body>
+</html>

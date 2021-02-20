@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //difference from CommonJS and ES6
+        //commonJS support dynamic support example:require($(path)/xx.js) 
+        //ES6 don't support but now has a proposal
+        //commonJS imports synchronize because it uses in server,file is in the local
+        //Stuck has little influence in main thread
+        //ES6 imports asynchronizly because used in browser and need to load files 
+        //if using import synchronizly it has big impact on rendering
+        //commonJS exports is copying value,value of import will not change
+        //ES6 uses real-time binding,import and export all value for one address
+        //AMD uses 'define' and 'require' to define modules and use modules
+        define(['./a','./b'],function(a,b){
+        a.do()
+        b.do()
+        })
+        define(function(require,exports,module){
+            var a=require('./a')
+            a.doSomething()
+            var b=require('./b')
+            b.doSomething()
+        }
+        )
+    </script>
+</body>
+</html>

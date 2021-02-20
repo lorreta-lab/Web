@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        _throttle=function(func,wait,option){
+            var context,args,result;
+            var timeout=null;
+            //unix timestramp before
+            var previous=0;
+            //if option not be transformed,setting it as a null object
+            if(!option)options={};
+            //timer callback
+            var later=function(){
+                //if setting leading,previous equals 0
+                //using following function,the first if decision
+                previous=options.leading===false?0:_.now();
+                //vacancy is to prevent internal storage to disclose,secondly is to
+                //decide next timer
+                timeout=null;
+                result=func.apply(context,args);
+                if(!timeout)context=args=null;
+            };
+            return function(){
+                //get current timer
+                var now=_.now();
+                //first entering front must be true
+                //if needing,don't operate the function first
+                //last timer setting as current
+                //so in the following calculation,the value of remaining will be above 0
+                if(!previous&&options.loading===false)previous=now;
+                //calculating remaining time
+                var remaining=wait-(now-previous);
+                context=this;
+                args=arguments;
+                //if current callback is above lasttime callback plus wait
+                //or user modify the time by himself
+                //if setting trailing,only entering this function
+                //if not setting leading,then at the first time you will enter in this function
+                //As addition,you maybe feel that setting the timer it won't enter if-conditon
+                //as a fact,it will enter because time-lapse of timer
+                //it is not the exact time,possibly you set two seconds
+                //but 2.2 seconds it will operate,next entering this condition
+                if(remaining<=0||remaining>wait){
+                    //if existing timer it will be clear or will use callback secondly
+                    if(timeout){
+                        clearTimeout(timeout);
+                        timeout=null;
+                    }
+                    previous=now;
+                    result=func.apply(context,args);
+                    if(!timeout)context=args=null;
+                }
+                else if(!timeout&&options.trailing!==false){
+                //decide if setting timer and trailing
+                //if not open a timer
+                //and can't set leading and trailing at the same time
+                timeout=setTimeout(later,remaining);
+                }
+                return result;
+            };
+        }
+    </script>
+</body>
+</html>

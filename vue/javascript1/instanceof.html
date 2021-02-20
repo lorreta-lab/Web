@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function instanceof(left,right){
+            //get prototype of type
+            let prototype=right.prototype
+            //get prototype of object
+            left=left._proto_
+            //dictate object of object whether equals to prototype of type
+            while(true){
+                if(left===null)
+                return false
+                if(prototype===left)
+                return true
+                left=left._proto_
+            }
+        }
+    </script>
+</body>
+</html>

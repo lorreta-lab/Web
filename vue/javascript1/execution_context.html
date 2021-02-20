@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var a=10
+        function foo(i){
+            var b=20
+        }
+        foo()
+        /*stack=[
+            globalContext,
+            fooContext
+        ]
+        globalContext.VO===global*/
+        /*globalContext.VO={
+            a:undefined,
+               foo:<Function>,
+        }*/
+        //global context
+        /*fooContext.VO===foo.AO*/
+        /*fooContext.AO{
+            i:undefined,
+                 b:undefined,
+                   arguments:<>
+        }*/
+        //arguments is unique object for function(array function don't have)
+        //this object is a fake array  has attribute 'length' and the element can be accessed by subscripting
+        //the 'callee' attribute of the object represents function itself
+        //'caller' attributes represent callback of the function
+        /*fooContext.[[Scope]]=[
+            globalContext.V0
+        ]
+        fooContext.Scope=fooContext.[[Scope]]+fooContext.V0
+        fooContext.Scope=[
+            fooContext.V0,
+            globalContext.V0
+        ]*/
+        //Scope chain
+        b()
+        console.log(a)
+        var a='Hello world'
+        function b(){
+            console.log('call b')
+        }//function and variable escalation
+        c()
+        function c(){
+            console.log('call b fist')
+        }
+        function c(){
+            console.log('call b second')
+        }
+        var c='Hello world'
+        var foo=1
+        (function foo(){
+           foo=10
+           console.log(foo)
+        }())
+        /*specialObject={};
+        Scope=specialObject+Scope;
+        foo=new FunctionExpression;
+        foo.[Scope]=Scope;
+        specialObject.foo=foo;
+        delete Scope[0];*/
+    </script>
+</body>
+</html>

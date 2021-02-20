@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let a={
+            age:1
+        }
+        let b=a
+        a.age=2
+        alert(b.age)
+        //in the developping,value one means transmitting to the other
+        //light copy 1.object.assign 2...former var
+        let c={
+            age:1
+        }
+        let d=Object.assign({},c)
+        c.age=2
+        alert(d.age)
+        let e={
+            age:1
+        }
+        let f={...e}
+        e.age=2
+        alert(f.age)
+        let aa={
+            age:1,
+            jobs:{
+                first:'FE'
+            }
+        }
+        let bb={...aa}
+        aa.jobs.first='native'
+        alert(bb.jobs.first)
+        //deep copy
+        let g={
+            age:1,
+            jobs:{
+                first:'FE'
+            }
+        }
+        let h=JSON.parse(JSON.stringify(g))
+        g.jobs.first='native'
+        alert(h.jobs.first)
+        //the disadvantange of this method   neglect 'undefined' neglect 'symbol'
+        //cannot serialization cannot solve object circular reference
+        let obj={
+            a:1,
+            b:{
+                c:2,
+                d:3,
+            },
+        }
+        obj.c=obj.b
+        obj.e=obj.a
+        obj.b.c=obj.c
+        obj.b.d=obj.b
+        obj.b.e=obj.b.c
+        let newObj=JSON.parse(JSON.stringify(obj))
+        console.log(newObj)
+        //converting circular structure to JSON
+    </script>
+</body>
+</html>

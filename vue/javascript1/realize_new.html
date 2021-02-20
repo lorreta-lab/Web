@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function create(){
+            //create a null object
+            let obj=new Object()
+            //get a structure function
+            let Con=[].shift.call(arguments)
+            //link to prototype
+            obj._proto_=Con.prototype
+            //bind this,operate a structure function
+            let result=Con.apply(obj,arguments)
+            //ensure new() is a object
+            return typeof result==='object'?result:obj
+        }
+        function Foo(){}
+        //function is a grammar sweet
+        //inner equals to new function()
+        let a={b:1}
+        //this bytes inner has already used new Object()
+        function Foo(){
+            return this;
+        }
+        Foo.getName=function(){
+           console.log('1');
+        };
+        Foo.prototype.getName=function(){
+            console.log('2');
+        }
+        new Foo.getName();
+        new Foo().getName();//update a foo
+    </script>
+</body>
+</html>

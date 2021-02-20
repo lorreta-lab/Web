@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //func is a function users imports needing to anti-shake
+        //wait is waiting time
+        const debounce=(func,wait=50)=>{
+            //cache a timer id
+            let timer=0;
+            //there return function is debounce function everytime users callback at fact
+            //if has set a timer,clear the timer last time
+            //begin a new timer,delay to operate the way users import
+            return function(...args){
+                if(timer)clearTimeout(timer)
+                timer=setTimeout(()=>{
+                func.apply(this,args)
+                },wait)
+            }
+        }
+        //if intervals users callback less than 'wait',the time at last time has yet operated it will be cleared
+        //operate immediately
+        //this is to get current time-stamp
+        function now(){
+            return +new Date()
+        }
+        function debounce(func,wait=50,immediate=true){
+            let timer,context,args
+            //delay operating function
+            const later=()=>setTimeout(()=>{
+                //delaying function operates completely,clear index 0f cache timer
+                timer=null
+                //in the condition of decaying operation,the function will operate in decay function
+                //use param and context cached before
+                if(!immediate){
+                    func.apply(context,args)
+                    context=args=null
+                }
+            },wait)
+            //there function returned is the function callback everytime
+            return function(...params){
+                //if not creating function delaying operating,create it
+                if(!timer){
+                    timer=later()
+                    //if operating immediately,callback function
+                    //else cache params and callback text
+                    if(immediate){
+                        func.apply(this,params)
+                    }else{
+                        context=this
+                        args=params
+                    }
+                    //if has already function delaying operating,when callback clear former and set it again
+                    //like this function delaying will reckon by time again
+                }
+                else{
+                    clearTimeout(timer)
+                    timer=later()
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

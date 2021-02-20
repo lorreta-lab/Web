@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const PENDING="pending"
+        const RESOLVED="resolved"
+        const REJECTED="rejected"
+        function MyPromise(fn){
+            let _this=this;
+            _this.currentState=PENDING;
+            _this.value=underfined;
+            //used to resolve callback from then,when status of promise is pending ,it will
+            //cache.And every case cache one at most.
+            _this.resolvedCallback=[];
+            _this.rejectedCallback=[];
+            _this.resolve=function(value){
+              if(value instanceof MyPromise){
+                  //if value is promise,recusive operation
+                  return value.then(_this.resolve,_this.reject)
+              }
+              setTimeout(()=>{ 
+                  //operate asynchronously,promise the series of operation
+                  if(_this.currentState===PENDING){
+                      _this.currentState=RESOLVED;
+                      _this.value=value;
+                      _this.resolvedCallback.forEach(cb=>cb());
+                  }
+              })
+            };
+            _this.reject=function(reason){
+                setTimeout(()=>{
+                    //operate asynchronously,promise the series of operation
+                    if(_this.currentState===PENDING){
+                        _this.currentState=REJECTED;
+                        _this.value=reason;
+                        _this.rejectedCallback.forEach(cb=>cb());
+                    }
+                })
+            }
+            //use to solve following questions
+            //new Promise(()=>throw Error('error'))
+            try{
+                fn(_this.resolve,_this.reject);
+            }catch(e){
+                _this.reject(e);
+            }
+        }
+        MyPromise.prototype.then=function(onResolved,onRejected){
+            var self=this;
+            //regulation 2.2.7 then must return a new promise
+            var promise2;
+            //regulation 2.2 onResolved and onRejected are optional parameter
+            //if type is not a function to reflect,at the same time realizing inheritance
+            //Promise.resolve(4).then().then((value)=>console.log(value))
+            onResolved=typeof onResolved ==='function'?onResolved:v=>v;
+            onRejected=typeof onRejected==='function'?onRejected:r=>throw r;
+
+            if(self.currentState===RESOLVED){
+                return(promise2=new MyPromise(function(resolve,reject){
+                 //regulation 2.2.4 promise onFulfilled onRejected be operated asynchronously
+                 //so using setTimeout
+                 setTimeout(function(){
+                 try{
+                      var x=onResolved(self.value);
+                      resolutionProdure(promise2,x,resolve,reject);
+                 }catch(reason){
+                     reject(reason);
+                 }
+                 });
+                }));
+            }
+            if(self.currentState===REJECTED){
+                return(promise2=new MyPromise(function (resolve,reject){
+                setTimeout(function(){
+                //asynchronously operate onRejected
+                try{
+                    var x=onRejected(self.value);
+                    resolutionProdure(promise2,x,resolve,reject);
+                }catch(reason){
+                    reject(reason);
+                }
+                });
+                }));
+            }
+            if(self.currentState===PENDING){
+                return(promise2=new MyPromise(function(resolve,reject){
+                    self.resolvedCallback.push(function(){
+                    //considering to have error possibly,so use try/catch
+                    try{
+                        var x=onResolved(self.value);
+                        resolutionProdure(promise2,x,resolve,reject);
+                    }catch(r){
+                        reject(r);
+                    }
+                    });
+            self.rejectedCallback.push(function(){
+            try{
+                var x=onRejected(self.value);
+                resolutionProdure(promise2,x,resolve,reject);
+            }catch(r){
+                reject(r);
+            }
+            });
+                }));
+            }
+        };
+        //regulation 2.3
+        //if x equals Promise,status is pending,so need to wait .If not,operating
+        if(x instanceof MyPromise){
+            if(x.currentState===PENDING){
+                x.then(function(value){
+                //using this function again to confirm x resolve
+                //param belonging to what type,if it is basic type so resolving again
+                //value for next then
+                resolutionProdure(promise2,value,resolve,reject);
+                },reject);
+            }else{
+                x.then(resolve,reject);
+            }
+            return;
+        }
+        //regulation 2.3.3.3.3
+        //reject or resolve if one can pass,ignore others
+        let called=false;
+        //regulation 2.3.3 confirm if x is object or function
+        if(x!==null&&(typeof x ==="object"||typeof x ==="function")){
+            //regulation 2.3.3.2,if can't catch then,reject
+            try{
+                //regulation 2.3.3.1
+                let then=x.then;
+                //if then is function,using x.then
+                if(typeof then==="function"){
+                //regulation 2.3.3.3
+                then.call(
+                    x,
+                    y=>{
+                    if (called) return;
+                    called=true;
+                    //regulation 2.3.3.3.1
+                    resolutionProdure(promise2,y,resolve,reject);
+                    },
+                    e=>{
+                        if(called) return;
+                        called=true;
+                        reject(e);
+                    }
+                );
+                }else{
+                    //regulation 2.3.3.4
+                    resolve(x);
+                }
+                }catch(e){
+                    if(called)return;
+                    called=true;
+                    reject(e);
+                }
+            }else{
+                //regulation 2.3.4,x is basic type
+                resolve(x);
+            }
+        }
+    </script>
+</body>
+</html>
